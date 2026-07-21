@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dooly — You're Almost Done · Before Your Call</title>
+<style>
+  :root {
+    --bg-top: #faf9f8;
+    --bg-bottom: #f4f3f2;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --muted-soft: #8a8a8a;
+    --red-bright: #f2666f;
+    --red: #e04b56;
+    --red-deep: #d94550;
+    --grid: rgba(26, 26, 26, 0.035);
+    --line: rgba(26, 26, 26, 0.08);
+    --line-soft: rgba(26, 26, 26, 0.06);
+    --cell: 40px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    background-attachment: fixed;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* LAYER 1 (z0): faint grid */
+  .layer-grid {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+    background-size: var(--cell) var(--cell);
+  }
+  /* LAYER 2 (z1): soft red corner glow */
+  .layer-glow {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      radial-gradient(560px 440px at 0% 0%, rgba(242, 102, 111, 0.16), transparent 62%),
+      radial-gradient(560px 440px at 100% 0%, rgba(242, 102, 111, 0.13), transparent 62%);
+  }
+  /* LAYER 3 (z2): content */
+  .content { position: relative; z-index: 2; padding-bottom: 72px; }
+  .sec { max-width: 660px; margin: 0 auto; padding: 0 22px; text-align: center; }
+  .sec.wide { max-width: 1000px; }
+  .section { margin-top: 72px; }
+
+  /* Wordmark */
+  .brand { display: inline-flex; align-items: center; gap: 10px; margin-top: 40px; margin-bottom: 40px; }
+  .brand-mark { width: 15px; height: 15px; border-radius: 5px; background: linear-gradient(135deg, var(--red-bright), var(--red-deep)); box-shadow: 0 3px 10px rgba(224, 75, 86, 0.32); }
+  .brand-name { font-size: 15px; font-weight: 700; letter-spacing: 0.22em; color: var(--ink); }
+
+  /* Hero / section headlines */
+  .hero { font-size: clamp(28px, 7.4vw, 46px); font-weight: 800; line-height: 1.07; letter-spacing: -0.01em; text-transform: uppercase; max-width: 600px; margin: 0 auto; overflow-wrap: break-word; }
+  .accent { color: var(--red-deep); background: rgba(242, 102, 111, 0.14); border-radius: 8px; padding: 0.02em 0.18em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .lead-note { font-size: 15px; color: var(--muted); max-width: 480px; margin: 18px auto 0; line-height: 1.6; }
+
+  /* Countdown */
+  .timer-wrap { margin: 34px auto 0; max-width: 460px; }
+  .timer-card {
+    background: #ffffff; border: 1px solid var(--line-soft); border-radius: 18px;
+    padding: 26px 28px 24px;
+    box-shadow: 0 24px 50px -26px rgba(26, 26, 26, 0.18), 0 8px 20px -14px rgba(224, 75, 86, 0.14);
+  }
+  .timer-lead { font-size: 14px; color: var(--muted); line-height: 1.5; }
+  .timer-lead .accent { font-size: 0.96em; }
+  .timer-digits {
+    display: inline-block; position: relative;
+    margin: 14px auto 4px;
+    font-size: clamp(46px, 13vw, 68px); font-weight: 800; letter-spacing: 0.04em;
+    color: var(--ink); line-height: 1; font-variant-numeric: tabular-nums;
+    padding-bottom: 12px;
+  }
+  .timer-digits::after {
+    content: ""; position: absolute; left: 10%; right: 10%; bottom: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--red-bright), transparent);
+    box-shadow: 0 0 12px 1px rgba(242, 102, 111, 0.5);
+  }
+  .timer-sub { margin-top: 10px; font-size: 13px; color: var(--muted-soft); line-height: 1.5; }
+
+  /* VSL */
+  .vsl-wrap { margin: 0 auto; max-width: 620px; }
+  .vsl {
+    position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 20px;
+    background: #ffffff; border: 1px solid rgba(26, 26, 26, 0.06);
+    box-shadow: 0 30px 60px -22px rgba(26, 26, 26, 0.22), 0 10px 24px -12px rgba(224, 75, 86, 0.10);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .vsl::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 0%, rgba(242, 102, 111, 0.05), transparent 60%); }
+  .vsl-play { position: relative; width: 74px; height: 74px; border-radius: 50%; background: #ffffff; box-shadow: 0 14px 30px -8px rgba(26, 26, 26, 0.28), 0 0 0 10px rgba(255, 255, 255, 0.5); display: flex; align-items: center; justify-content: center; }
+  .vsl-play::after { content: ""; display: block; width: 0; height: 0; margin-left: 5px; border-top: 13px solid transparent; border-bottom: 13px solid transparent; border-left: 21px solid var(--red-deep); }
+  .vsl-tag { position: absolute; top: 13px; left: 14px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; color: var(--muted-soft); background: rgba(255, 255, 255, 0.72); padding: 4px 9px; border-radius: 7px; max-width: calc(100% - 28px); }
+  .vsl-cap { margin-top: 16px; font-size: 14px; color: var(--muted); }
+
+  /* Section labels */
+  .sec-title { font-size: clamp(22px, 4.6vw, 30px); font-weight: 800; letter-spacing: -0.01em; overflow-wrap: break-word; }
+  .sec-sub { margin-top: 12px; font-size: 15px; color: var(--muted); max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+  .sec-label { font-size: 13.5px; color: var(--muted); letter-spacing: 0.01em; }
+  .sec-label-2 { margin-top: 6px; font-size: 13px; color: var(--muted-soft); }
+
+  /* ---- Pre-Call Checklist card ---- */
+  .check-card {
+    position: relative; margin: 30px auto 0; max-width: 800px; text-align: left;
+    background: #fafafa; border: 1px solid var(--line); border-radius: 20px;
+    padding: 40px 40px 34px; overflow: hidden;
+    box-shadow: 0 24px 54px -30px rgba(26, 26, 26, 0.20);
+  }
+  .check-card::before { /* faint light-red top-edge glow */
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 120px; pointer-events: none;
+    background: radial-gradient(120% 130% at 50% 0%, rgba(242, 102, 111, 0.14), transparent 66%);
+  }
+  .check-item { position: relative; display: flex; gap: 18px; align-items: flex-start; padding: 20px 0; }
+  .check-item + .check-item { border-top: 1px solid var(--line-soft); }
+  .check-icon { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 12px; background: #ffffff; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+  .check-icon svg { width: 22px; height: 22px; stroke: var(--red-deep); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .check-text { font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+  .check-text .bold { display: block; color: var(--ink); font-weight: 700; font-size: 15.5px; margin-bottom: 4px; }
+  .check-text .follow { display: block; margin-top: 4px; color: var(--muted-soft); font-size: 13.5px; }
+
+  /* ---- Calendar-invite mockup ---- */
+  .cal-mock { margin: 26px auto 0; max-width: 560px; background: #ffffff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 18px 40px -26px rgba(26,26,26,0.22); text-align: left; }
+  .cal-strip { padding: 16px 18px; background: #fbfbfc; border-bottom: 1px solid var(--line-soft); }
+  .cal-strip-text { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+  .cal-strip-action { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  .cal-add-btn { font: inherit; font-size: 12.5px; font-weight: 600; color: var(--ink); background: #fff; border: 1.5px solid var(--red-bright); border-radius: 8px; padding: 8px 14px; cursor: pointer; box-shadow: 0 0 0 3px rgba(242,102,111,0.10); }
+  .cal-arrow { color: var(--red-deep); font-size: 18px; line-height: 1; font-weight: 700; transform: translateY(-1px); }
+  .cal-event { padding: 18px; }
+  .cal-event-top { display: flex; gap: 14px; align-items: flex-start; }
+  .cal-datechip { flex: 0 0 auto; width: 54px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line-soft); text-align: center; }
+  .cal-datechip .m { display: block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: #3b6fd1; padding: 3px 0; }
+  .cal-datechip .d { display: block; font-size: 20px; font-weight: 800; color: var(--ink); padding: 3px 0 1px; }
+  .cal-datechip .w { display: block; font-size: 10px; color: var(--muted-soft); padding-bottom: 4px; }
+  .cal-event-head { min-width: 0; }
+  .cal-title { font-size: 16px; font-weight: 700; color: var(--ink); }
+  .cal-link { display: inline-block; margin-top: 4px; font-size: 12.5px; color: #3b6fd1; text-decoration: none; }
+  .cal-link:hover { text-decoration: underline; }
+  .cal-rows { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .cal-row { display: flex; gap: 12px; font-size: 12.5px; }
+  .cal-row .k { flex: 0 0 46px; color: var(--muted-soft); }
+  .cal-row .v { color: var(--muted); line-height: 1.5; }
+  .cal-rsvp { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line-soft); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .cal-rsvp .label { font-size: 12.5px; color: var(--muted); }
+  .cal-rsvp-btns { display: flex; align-items: center; gap: 8px; }
+  .rsvp { font: inherit; font-size: 12.5px; font-weight: 600; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; cursor: pointer; }
+  .rsvp.yes { color: var(--ink); border: 1.5px solid var(--red-bright); box-shadow: 0 0 0 3px rgba(242,102,111,0.10); }
+  .cal-arrow-yes { color: var(--red-deep); font-size: 18px; font-weight: 700; margin-left: 2px; }
+
+  /* Email-app icons */
+  .mail-row { display: flex; justify-content: center; gap: 26px; margin: 26px auto 0; flex-wrap: wrap; }
+  .mail { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .mail-ic { width: 40px; height: 40px; border-radius: 50%; background: #fff; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px -10px rgba(26,26,26,0.2); }
+  .mail-ic svg { width: 20px; height: 20px; }
+  .mail-label { font-size: 11px; color: var(--muted-soft); letter-spacing: 0.02em; }
+
+  /* ---- FAQ ---- */
+  .faq-intro { font-size: 14.5px; color: var(--muted); margin: 8px auto 0; max-width: 480px; }
+  .faq-list { margin: 30px auto 0; max-width: 560px; display: flex; flex-direction: column; gap: 34px; text-align: left; }
+  .faq-q { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 14px; line-height: 1.4; }
+  .faq-item .vsl { border-radius: 16px; }
+  .faq-item .vsl-play { width: 56px; height: 56px; }
+  .faq-item .vsl-play::after { border-top-width: 10px; border-bottom-width: 10px; border-left-width: 16px; }
+
+  /* ---- Galleries ---- */
+  .gallery { display: grid; gap: 14px; margin: 28px auto 0; }
+  .g6 { grid-template-columns: repeat(3, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); max-width: 720px; margin-left: auto; margin-right: auto; }
+  .g15 { grid-template-columns: repeat(5, 1fr); }
+  .tile { position: relative; border-radius: 14px; background: #ffffff; border: 1px solid var(--line); box-shadow: 0 14px 30px -22px rgba(26,26,26,0.2); overflow: hidden; }
+  .tile.r43 { aspect-ratio: 4 / 3; }
+  .tile.r34 { aspect-ratio: 3 / 4; }
+  .tile.r1 { aspect-ratio: 1 / 1; }
+  .tile::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='%23c9c6c5' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='2'/><circle cx='8.5' cy='10' r='1.5'/><path d='M21 15l-4.5-4.5L7 20'/></svg>");
+    background-repeat: no-repeat; background-position: center; opacity: 0.7;
+  }
+
+  /* ---- Testimonials ---- */
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px auto 0; }
+  .testi { background: #ffffff; border: 1px solid var(--line); border-radius: 16px; padding: 18px; text-align: left; box-shadow: 0 16px 34px -26px rgba(26,26,26,0.2); display: flex; flex-direction: column; gap: 12px; }
+  .testi-photo { position: relative; width: 100%; aspect-ratio: 16 / 10; border-radius: 10px; background: #f4f3f2; border: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: center; }
+  .testi-photo span { width: 40px; height: 40px; border-radius: 50%; background: rgba(242,102,111,0.12); color: var(--red-deep); font-weight: 800; font-size: 17px; display: flex; align-items: center; justify-content: center; }
+  .testi-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .testi-result { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+
+  /* ---- Divider + Scarcity + CTA ---- */
+  .divider { height: 1px; width: 100%; max-width: 420px; margin: 0 auto; background: linear-gradient(90deg, transparent, var(--red-bright), transparent); box-shadow: 0 0 14px 1px rgba(242, 102, 111, 0.45); }
+  .scarcity-1 { display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; font-size: 12.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-align: center; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red-bright); box-shadow: 0 0 8px rgba(242, 102, 111, 0.7); }
+  .scarcity-2 { margin-top: 10px; font-size: 13px; color: var(--muted-soft); }
+  .cta-halo { margin-top: 20px; display: flex; justify-content: center; }
+  .cta { position: relative; display: inline-block; text-decoration: none; font-size: 16px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); background: #ffffff; padding: 20px 52px; border-radius: 999px; border: 1px solid rgba(224, 75, 86, 0.18); box-shadow: 0 0 0 6px rgba(242, 102, 111, 0.06), 0 18px 40px -12px rgba(224, 75, 86, 0.42), 0 6px 16px -8px rgba(26, 26, 26, 0.18); transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  .cta .accent { color: var(--red-deep); background: none; padding: 0; }
+  .cta:hover { transform: translateY(-2px); box-shadow: 0 0 0 7px rgba(242, 102, 111, 0.09), 0 24px 50px -12px rgba(224, 75, 86, 0.5), 0 8px 20px -8px rgba(26, 26, 26, 0.2); }
+
+  /* ---- Fine print / footer ---- */
+  .fineprint { margin: 34px auto 0; max-width: 560px; text-align: left; display: flex; flex-direction: column; gap: 16px; }
+  .fineprint p { font-size: 11.5px; line-height: 1.65; color: var(--muted-soft); }
+  .fineprint strong { color: var(--muted); font-weight: 600; }
+  footer { margin-top: 40px; padding-top: 26px; border-top: 1px solid rgba(26, 26, 26, 0.06); text-align: center; }
+  .footer-legal { font-size: 12px; color: var(--muted-soft); }
+  .footer-legal a { color: var(--muted); text-decoration: none; border-bottom: 1px solid rgba(107, 107, 107, 0.28); padding-bottom: 1px; transition: color 0.15s ease; }
+  .footer-legal a:hover { color: var(--ink); }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 720px) {
+    .g15 { grid-template-columns: repeat(4, 1fr); }
+    .testi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .sec { padding: 0 18px; }
+    .section { margin-top: 56px; }
+    .timer-digits { font-size: clamp(44px, 15vw, 60px); }
+    .check-card { padding: 26px 18px 22px; border-radius: 16px; }
+    .check-item { gap: 13px; padding: 18px 0; }
+    .check-icon { width: 38px; height: 38px; border-radius: 11px; }
+    .cal-mock { border-radius: 12px; }
+    .cal-strip { padding: 14px; }
+    .cal-event { padding: 15px; }
+    .cal-event-top { gap: 10px; }
+    .g6 { grid-template-columns: repeat(2, 1fr); }
+    .g3 { grid-template-columns: repeat(3, 1fr); }
+    .g15 { grid-template-columns: repeat(3, 1fr); }
+    .testi-grid { grid-template-columns: repeat(1, 1fr); }
+    .faq-list { gap: 30px; }
+    .cta { padding: 18px 38px; font-size: 15px; letter-spacing: 0.1em; }
+    .vsl { border-radius: 16px; }
+    .cal-rsvp { gap: 8px; }
+  }
+  @media (max-width: 400px) {
+    .section { margin-top: 48px; }
+    .hero { font-size: clamp(24px, 8vw, 34px); }
+    .timer-card { padding: 22px 20px 20px; }
+    .timer-digits { font-size: 50px; }
+    .check-card { padding: 22px 15px 18px; }
+    .check-text { font-size: 14px; }
+    .check-text .bold { font-size: 15px; }
+    .cal-row .k { flex-basis: 40px; }
+    .rsvp { padding: 7px 13px; }
+    .cta { padding: 16px 30px; font-size: 14px; letter-spacing: 0.08em; }
+    .mail-row { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+  <div class="layer-grid"></div>
+  <div class="layer-glow"></div>
+
+  <main class="content">
+
+    <!-- Wordmark -->
+    <div class="sec">
+      <div class="brand"><span class="brand-mark"></span><span class="brand-name">DOOLY</span></div>
+    </div>
+
+    <!-- 1. Urgency intervention header -->
+    <section class="sec">
+      <h1 class="hero">WAIT — YOU'RE ALMOST <span class="accent">DONE</span></h1>
+      <p class="lead-note">Watch the short video below and complete the checklist before your call.</p>
+    </section>
+
+    <!-- 2. Countdown -->
+    <section class="sec">
+      <div class="timer-wrap">
+        <div class="timer-card">
+          <p class="timer-lead">📞 Our team will call you in the next <span class="accent">5 minutes</span>.</p>
+          <div class="timer-digits" id="countdown">05:00</div>
+          <p class="timer-sub" id="timer-sub" aria-live="polite">Keep your phone nearby and stay on this page.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Pre-call VSL -->
+    <section class="sec section">
+      <div class="vsl-wrap">
+        <div class="vsl">
+          <span class="vsl-tag">VSL — WATCH BEFORE YOUR CALL</span>
+          <div class="vsl-play" aria-hidden="true"></div>
+        </div>
+      </div>
+      <p class="vsl-cap">A quick word on how to prepare so we can actually help you on the call.</p>
+    </section>
+
+    <!-- 4. Pre-Call Checklist -->
+    <section class="sec section">
+      <h2 class="sec-title">Pre-Call Checklist</h2>
+      <p class="sec-sub">Do these before your call to get the most out of it.</p>
+
+      <div class="check-card">
+        <!-- Item 1: headset with slash -->
+        <div class="check-item">
+          <div class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 15a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2z"/><path d="M20 15a2 2 0 0 0-2-2h-1v5h1a2 2 0 0 0 2-2z"/><path d="M17 18v1a2 2 0 0 1-2 2h-3"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
+          </div>
+          <p class="check-text">Please be in a quiet spot on a computer/laptop where we can speak about your goals. We will not take calls when you're on the go or can't devote your full attention. This is important; please treat it that way.</p>
+        </div>
+        <!-- Item 2: person with speech bubble -->
+        <div class="check-item">
+          <div class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M14 4h6a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-3l-2.5 2.2V10H14a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>
+          </div>
+          <p class="check-text">Come prepared with any questions you may have — we want you to make an informed decision and will answer all of them to the best of our ability.</p>
+        </div>
+        <!-- Item 3: envelope / calendar -->
+        <div class="check-item">
+          <div class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="6"/><line x1="16" y1="3" x2="16" y2="6"/><path d="M7 13l3.5 2.5L14 12"/></svg>
+          </div>
+          <p class="check-text">
+            <span class="bold">Check your inbox and accept the calendar invite</span>
+            <span class="follow">The "Invitation from unknown sender" email may give the option to click 'I know the sender' instead of 'Add to calendar'. If this is the case, please click the 'I know the sender' button.</span>
+          </p>
+        </div>
+
+        <!-- Calendar-invite mockup -->
+        <div class="cal-mock" aria-hidden="true">
+          <div class="cal-strip">
+            <p class="cal-strip-text">This event isn't in your calendar yet. You haven't interacted with this sender before. Do you want to automatically add this and future invitations from them to your calendar?</p>
+            <div class="cal-strip-action">
+              <button class="cal-add-btn" type="button" tabindex="-1">Add to calendar</button>
+              <span class="cal-arrow">&#8592;</span>
+            </div>
+          </div>
+          <div class="cal-event">
+            <div class="cal-event-top">
+              <div class="cal-datechip"><span class="m">Feb</span><span class="d">18</span><span class="w">Tue</span></div>
+              <div class="cal-event-head">
+                <div class="cal-title">Important event</div>
+                <a href="#" class="cal-link" tabindex="-1">View on Google Calendar</a>
+              </div>
+            </div>
+            <div class="cal-rows">
+              <div class="cal-row"><span class="k">When</span><span class="v">Tue Feb 18, 2025 · 11pm – 11:30pm (UTC)</span></div>
+              <div class="cal-row"><span class="k">Where</span><span class="v">Google Meet (instructions in description)</span></div>
+            </div>
+            <div class="cal-rsvp">
+              <span class="label">Going?</span>
+              <div class="cal-rsvp-btns">
+                <button class="rsvp yes" type="button" tabindex="-1">Yes</button>
+                <span class="cal-arrow-yes">&#8592;</span>
+                <button class="rsvp" type="button" tabindex="-1">Maybe</button>
+                <button class="rsvp" type="button" tabindex="-1">No</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email-app icons -->
+        <div class="mail-row">
+          <div class="mail">
+            <div class="mail-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="#eef2fb" stroke="#8fa9dd" stroke-width="1.2"/><path d="M3.5 7.5l8.5 6 8.5-6" fill="none" stroke="#3b6fd1" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="mail-label">Outlook</span>
+          </div>
+          <div class="mail">
+            <div class="mail-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5" fill="#fdf0f0" stroke="#e6a3a8" stroke-width="1.2"/><path d="M4 7l8 6 8-6" fill="none" stroke="#d94550" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="mail-label">Gmail</span>
+          </div>
+          <div class="mail">
+            <div class="mail-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="4" fill="#eef2fb" stroke="#9bb0d6" stroke-width="1.2"/><path d="M4 8l8 5.5L20 8" fill="none" stroke="#5b7bbf" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="mail-label">Apple Mail</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FAQ -->
+    <section class="sec section">
+      <h2 class="sec-title">Common questions</h2>
+      <p class="faq-intro">Before your call, here are the questions people ask most.</p>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <p class="faq-q">Can I do this with no experience and barely any money?</p>
+          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">Should I put my budget into the mentorship or into inventory?</p>
+          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">How much time does this actually take each week?</p>
+          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">Does my business partner need to be on the call too?</p>
+          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">How long until I make my money back?</p>
+          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Founder credibility stack -->
+    <section class="sec section">
+      <div class="divider"></div>
+      <h2 class="hero" style="margin-top:34px;">HOW I WENT FROM MINIMUM-WAGE JOBS TO BUILDING <span class="accent">$100K/MONTH</span> CLOTHING BRANDS</h2>
+      <p class="sec-sub" style="margin-top:18px;max-width:540px;">Scaling multiple clothing brands past $100k/month at 21 — without any prior online business experience or thousands to my name.</p>
+    </section>
+
+    <!-- 7. Founder achievement gallery -->
+    <section class="sec wide section">
+      <p class="sec-label">Here's what I've built with my own clothing brands.</p>
+      <div class="gallery g6">
+        <div class="tile r43"></div><div class="tile r43"></div><div class="tile r43"></div>
+        <div class="tile r43"></div><div class="tile r43"></div><div class="tile r43"></div>
+      </div>
+    </section>
+
+    <!-- 8. Recent launch results -->
+    <section class="sec wide section">
+      <p class="sec-label">How much one of my recent launches pulled in.</p>
+      <div class="gallery g3">
+        <div class="tile r34"></div><div class="tile r34"></div><div class="tile r34"></div>
+      </div>
+    </section>
+
+    <!-- 9. Student testimonials -->
+    <section class="sec wide section">
+      <h2 class="sec-title">Hear what my students are saying.</h2>
+      <div class="testi-grid">
+        <div class="testi">
+          <div class="testi-photo"><span>A</span></div>
+          <div><div class="testi-name">Anthony</div><div class="testi-result">$3,000+ in 1 month after struggling for 3 years</div></div>
+        </div>
+        <div class="testi">
+          <div class="testi-photo"><span>A</span></div>
+          <div><div class="testi-name">Alex</div><div class="testi-result">$2,000+ in his first month (while still in high school)</div></div>
+        </div>
+        <div class="testi">
+          <div class="testi-photo"><span>K</span></div>
+          <div><div class="testi-name">Kevin</div><div class="testi-result">Sold out his first drop in 1 month ($2,000+)</div></div>
+        </div>
+        <div class="testi">
+          <div class="testi-photo"><span>J</span></div>
+          <div><div class="testi-name">Jam</div><div class="testi-result">Sold out his first drop and made $4,000+ (no ads)</div></div>
+        </div>
+        <div class="testi">
+          <div class="testi-photo"><span>L</span></div>
+          <div><div class="testi-name">Lincoln</div><div class="testi-result">From 400 to 1,100 followers in a week — sold half his drop in 24 hours</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Proof-at-scale gallery -->
+    <section class="sec wide section">
+      <h2 class="sec-title" style="font-size:clamp(20px,4vw,26px);">The only system you'll ever need to start and scale your clothing brand</h2>
+      <p class="sec-label-2">and my students are the proof.</p>
+      <div class="gallery g15">
+        <div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div>
+        <div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div>
+        <div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div><div class="tile r1"></div>
+      </div>
+    </section>
+
+    <!-- 11. Reassurance CTA -->
+    <section class="sec section">
+      <div class="divider"></div>
+      <div style="margin-top:30px;">
+        <div class="scarcity-1"><span class="dot"></span> ONLY LIMITED SPOTS AVAILABLE</div>
+        <div class="scarcity-2">Join over 70+ brand owners worldwide 🎟️ Spots close soon</div>
+        <div class="cta-halo"><a href="#" class="cta">CONFIRM MY <span class="accent">CALL</span></a></div>
+      </div>
+    </section>
+
+    <!-- 12. Footer: disclaimer + legal -->
+    <section class="sec">
+      <div class="fineprint">
+        <p><strong>Earnings &amp; Results Disclaimer.</strong> The results and testimonials shared on this page are exceptional and are not representative of average performance. These outcomes are not typical, and there's no promise that you'll achieve similar results. Any figures or projections mentioned are simply estimates of what we believe may be possible — there's no guarantee you'll earn the same, and your results will depend on a range of factors including your skills, dedication, experience, decision-making, and market conditions. Building a clothing brand carries risk, and we cannot and do not make any guarantees about your results or income.</p>
+        <p>Some individuals featured in our testimonials may have a material connection to Dooly — such as being compensated or receiving other benefits in exchange for their feedback.</p>
+        <p>Any guarantee is conditional and requires you to complete the training, apply the strategies as instructed, hit the engagement benchmarks, and follow the required actions within the timeframes outlined in our Terms of Service.</p>
+      </div>
+      <footer>
+        <div class="footer-legal">© Dooly. All rights reserved. · <a href="#">Terms of Service</a> · <a href="#">Privacy Policy</a></div>
+      </footer>
+    </section>
+
+  </main>
+
+  <script>
+    // Countdown: 5:00 -> 0:00. No storage; resets on refresh (intended).
+    (function () {
+      var total = 5 * 60;
+      var el = document.getElementById('countdown');
+      var sub = document.getElementById('timer-sub');
+      function fmt(t) {
+        var m = Math.floor(t / 60), s = t % 60;
+        return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+      }
+      if (el) el.textContent = fmt(total);
+      var iv = setInterval(function () {
+        total -= 1;
+        if (total <= 0) {
+          total = 0;
+          if (el) el.textContent = '00:00';
+          if (sub) sub.textContent = "We're calling now — please keep your phone nearby. 📱";
+          clearInterval(iv);
+          return;
+        }
+        if (el) el.textContent = fmt(total);
+      }, 1000);
+    })();
+
+    // Placeholder links do nothing (swap hrefs for the real scheduler / legal pages later).
+    document.querySelectorAll('a[href="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); });
+    });
+  </script>
+</body>
+</html>
