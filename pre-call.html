@@ -106,6 +106,19 @@
   .vsl-tag { position: absolute; top: 13px; left: 14px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; color: var(--muted-soft); background: rgba(255, 255, 255, 0.72); padding: 4px 9px; border-radius: 7px; max-width: calc(100% - 28px); }
   .vsl-cap { margin-top: 16px; font-size: 14px; color: var(--muted); }
 
+  /* Wistia embeds fill the framed 16:9 box (FAQ answer videos) */
+  .vsl-embed { display: block; background: #000; }
+  .vsl-embed::before { content: none; }
+  .vsl-embed wistia-player { display: block; width: 100%; height: 100%; }
+  .faq-cap { margin-top: 13px; font-size: 14.5px; font-weight: 600; color: var(--muted); text-align: center; }
+  /* Blurred Wistia poster (swatch) while each player loads */
+  wistia-player:not(:defined) { display: block; width: 100%; height: 100%; filter: blur(5px); background-size: contain; background-position: center; background-repeat: no-repeat; }
+  wistia-player[media-id='m8buo9wund']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/m8buo9wund/swatch'); }
+  wistia-player[media-id='lolchzxlz1']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/lolchzxlz1/swatch'); }
+  wistia-player[media-id='1cmk5w8uzl']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/1cmk5w8uzl/swatch'); }
+  wistia-player[media-id='l6wscu7zik']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/l6wscu7zik/swatch'); }
+  wistia-player[media-id='r11ulpg5j2']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/r11ulpg5j2/swatch'); }
+
   /* Section labels */
   .sec-title { font-size: clamp(22px, 4.6vw, 30px); font-weight: 800; letter-spacing: -0.01em; overflow-wrap: break-word; }
   .sec-sub { margin-top: 12px; font-size: 15px; color: var(--muted); max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.6; }
@@ -390,24 +403,24 @@
 
       <div class="faq-list">
         <div class="faq-item">
-          <p class="faq-q">Can I do this with no experience and barely any money?</p>
-          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+          <div class="vsl vsl-embed"><wistia-player media-id="m8buo9wund" aspect="1.7777777777777777"></wistia-player></div>
+          <p class="faq-cap">Is it OK if I'm starting from 0?</p>
         </div>
         <div class="faq-item">
-          <p class="faq-q">Should I put my budget into the mentorship or into inventory?</p>
-          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+          <div class="vsl vsl-embed"><wistia-player media-id="lolchzxlz1" aspect="1.7777777777777777"></wistia-player></div>
+          <p class="faq-cap">If I invest, I won't have enough money for bulk</p>
         </div>
         <div class="faq-item">
-          <p class="faq-q">How much time does this actually take each week?</p>
-          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+          <div class="vsl vsl-embed"><wistia-player media-id="1cmk5w8uzl" aspect="1.7777777777777777"></wistia-player></div>
+          <p class="faq-cap">How much time do I have to put in per week?</p>
         </div>
         <div class="faq-item">
-          <p class="faq-q">Does my business partner need to be on the call too?</p>
-          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+          <div class="vsl vsl-embed"><wistia-player media-id="l6wscu7zik" aspect="1.7777777777777777"></wistia-player></div>
+          <p class="faq-cap">Does my business partner need to be on the call?</p>
         </div>
         <div class="faq-item">
-          <p class="faq-q">How long until I make my money back?</p>
-          <div class="vsl"><span class="vsl-tag">VSL</span><div class="vsl-play" aria-hidden="true"></div></div>
+          <div class="vsl vsl-embed"><wistia-player media-id="r11ulpg5j2" aspect="1.7777777777777777"></wistia-player></div>
+          <p class="faq-cap">How long will it take to make my money back?</p>
         </div>
       </div>
     </section>
@@ -498,6 +511,12 @@
 
   </main>
 
+  <script src="https://fast.wistia.com/player.js" async></script>
+  <script src="https://fast.wistia.com/embed/m8buo9wund.js" async type="module"></script>
+  <script src="https://fast.wistia.com/embed/lolchzxlz1.js" async type="module"></script>
+  <script src="https://fast.wistia.com/embed/1cmk5w8uzl.js" async type="module"></script>
+  <script src="https://fast.wistia.com/embed/l6wscu7zik.js" async type="module"></script>
+  <script src="https://fast.wistia.com/embed/r11ulpg5j2.js" async type="module"></script>
   <script>
     // Countdown: 5:00 -> 0:00. No storage; resets on refresh (intended).
     (function () {
