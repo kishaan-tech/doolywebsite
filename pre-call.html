@@ -113,6 +113,7 @@
   .faq-cap { margin-top: 13px; font-size: 14.5px; font-weight: 600; color: var(--muted); text-align: center; }
   /* Blurred Wistia poster (swatch) while each player loads */
   wistia-player:not(:defined) { display: block; width: 100%; height: 100%; filter: blur(5px); background-size: contain; background-position: center; background-repeat: no-repeat; }
+  wistia-player[media-id='99ogqgpzwf']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/99ogqgpzwf/swatch'); }
   wistia-player[media-id='m8buo9wund']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/m8buo9wund/swatch'); }
   wistia-player[media-id='lolchzxlz1']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/lolchzxlz1/swatch'); }
   wistia-player[media-id='1cmk5w8uzl']:not(:defined) { background-image: url('https://fast.wistia.com/embed/medias/1cmk5w8uzl/swatch'); }
@@ -187,6 +188,34 @@
   .faq-item .vsl-play { width: 56px; height: 56px; }
   .faq-item .vsl-play::after { border-top-width: 10px; border-bottom-width: 10px; border-left-width: 16px; }
 
+  /* ---- Long-form video testimonials: custom Dooly YouTube player ---- */
+  .vids { display: grid; grid-template-columns: repeat(2, 1fr); gap: 34px 22px; margin: 30px auto 0; max-width: 900px; }
+  .vids > .vid:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: 439px; margin: 0 auto; }
+  .vid-cap { margin-top: 14px; text-align: center; }
+  .vid-cap .n { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .vid-cap .r { font-size: 13.5px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+
+  .dp { position: relative; width: 100%; padding-top: 56.25%; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #0c0c0d; box-shadow: 0 22px 46px -26px rgba(26,26,26,0.30); outline: none; }
+  .dp > * { position: absolute; }
+  .dp iframe { inset: 0; width: 100%; height: 100%; border: 0; }
+
+  .dp-facade { inset: 0; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background: none; cursor: pointer; display: block; }
+  .dp-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .dp-shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.04) 30%, rgba(0,0,0,0.32)); }
+  .dp-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 70px; height: 70px; border-radius: 50%; background: var(--red-bright); box-shadow: 0 10px 30px -6px rgba(242,102,111,0.6), 0 0 0 10px rgba(242,102,111,0.16); transition: transform .18s ease, box-shadow .18s ease; }
+  .dp-facade:hover .dp-play, .dp-facade:focus-visible .dp-play { transform: translate(-50%,-50%) scale(1.07); box-shadow: 0 14px 36px -6px rgba(242,102,111,0.7), 0 0 0 12px rgba(242,102,111,0.20); }
+  .dp-play::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-42%,-50%); width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 20px solid #fff; }
+
+  .dp-controls { left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 9px; padding: 22px 12px 11px; background: linear-gradient(to top, rgba(255,255,255,0.95) 25%, rgba(255,255,255,0)); opacity: 0; transform: translateY(6px); transition: opacity .2s ease, transform .2s ease; pointer-events: none; }
+  .dp.show-controls .dp-controls, .dp.paused .dp-controls { opacity: 1; transform: none; pointer-events: auto; }
+  .dp-btn { flex: 0 0 auto; width: 30px; height: 30px; border: 0; background: none; padding: 0; cursor: pointer; color: var(--ink); display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+  .dp-btn:hover { color: var(--red-deep); }
+  .dp-btn svg { width: 19px; height: 19px; fill: currentColor; }
+  .dp-track { flex: 1 1 auto; height: 6px; border-radius: 999px; background: rgba(26,26,26,0.18); cursor: pointer; position: relative; }
+  .dp-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; border-radius: 999px; background: var(--red-bright); }
+  .dp-fill::after { content: ""; position: absolute; right: -5px; top: 50%; transform: translateY(-50%); width: 11px; height: 11px; border-radius: 50%; background: var(--red-deep); box-shadow: 0 0 0 3px rgba(242,102,111,0.22); }
+  .dp-time { flex: 0 0 auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
   /* ---- Galleries ---- */
   .gallery { display: grid; gap: 14px; margin: 28px auto 0; }
   .g6 { grid-template-columns: repeat(3, 1fr); }
@@ -246,6 +275,7 @@
     .g3 { grid-template-columns: repeat(3, 1fr); }
     .g15 { grid-template-columns: repeat(3, 1fr); }
     .proof-wall { column-count: 1; max-width: 420px; }
+    .vids { grid-template-columns: 1fr; max-width: 430px; gap: 26px; }
     .faq-list { gap: 30px; }
     .cta { padding: 18px 38px; font-size: 15px; letter-spacing: 0.1em; }
     .vsl { border-radius: 16px; }
@@ -297,9 +327,8 @@
     <!-- 3. Pre-call VSL -->
     <section class="sec section">
       <div class="vsl-wrap">
-        <div class="vsl">
-          <span class="vsl-tag">VSL — WATCH BEFORE YOUR CALL</span>
-          <div class="vsl-play" aria-hidden="true"></div>
+        <div class="vsl vsl-embed">
+          <wistia-player media-id="99ogqgpzwf" aspect="1.7777777777777777"></wistia-player>
         </div>
       </div>
       <p class="vsl-cap">A quick word on how to prepare so we can actually help you on the call.</p>
@@ -422,6 +451,78 @@
       </div>
     </section>
 
+    <!-- 5b. Long-form video testimonials (custom Dooly player) -->
+    <section class="sec wide section">
+      <h2 class="sec-title">Hear it straight from our students</h2>
+      <p class="sec-sub">Real brand owners, in their own words.</p>
+      <!-- TODO: replace each caption's name + one-line result (video titles couldn't be auto-pulled) -->
+      <div class="vids">
+        <div class="vid">
+          <div class="dp" data-video-id="1mBZBY6aOa8" tabindex="0" aria-label="Student testimonial video">
+            <button type="button" class="dp-facade" aria-label="Play testimonial">
+              <img class="dp-poster" src="https://img.youtube.com/vi/1mBZBY6aOa8/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/1mBZBY6aOa8/hqdefault.jpg';" alt="" loading="lazy">
+              <span class="dp-shade"></span><span class="dp-play"></span>
+            </button>
+          </div>
+          <div class="vid-cap"><div class="n">Student name</div><div class="r">Add their one-line result</div></div>
+        </div>
+        <div class="vid">
+          <div class="dp" data-video-id="abuzoFYglEY" tabindex="0" aria-label="Student testimonial video">
+            <button type="button" class="dp-facade" aria-label="Play testimonial">
+              <img class="dp-poster" src="https://img.youtube.com/vi/abuzoFYglEY/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/abuzoFYglEY/hqdefault.jpg';" alt="" loading="lazy">
+              <span class="dp-shade"></span><span class="dp-play"></span>
+            </button>
+          </div>
+          <div class="vid-cap"><div class="n">Student name</div><div class="r">Add their one-line result</div></div>
+        </div>
+        <div class="vid">
+          <div class="dp" data-video-id="WF1nspsrWvA" tabindex="0" aria-label="Student testimonial video">
+            <button type="button" class="dp-facade" aria-label="Play testimonial">
+              <img class="dp-poster" src="https://img.youtube.com/vi/WF1nspsrWvA/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/WF1nspsrWvA/hqdefault.jpg';" alt="" loading="lazy">
+              <span class="dp-shade"></span><span class="dp-play"></span>
+            </button>
+          </div>
+          <div class="vid-cap"><div class="n">Student name</div><div class="r">Add their one-line result</div></div>
+        </div>
+        <div class="vid">
+          <div class="dp" data-video-id="9n8fjN2-s44" tabindex="0" aria-label="Student testimonial video">
+            <button type="button" class="dp-facade" aria-label="Play testimonial">
+              <img class="dp-poster" src="https://img.youtube.com/vi/9n8fjN2-s44/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/9n8fjN2-s44/hqdefault.jpg';" alt="" loading="lazy">
+              <span class="dp-shade"></span><span class="dp-play"></span>
+            </button>
+          </div>
+          <div class="vid-cap"><div class="n">Student name</div><div class="r">Add their one-line result</div></div>
+        </div>
+        <div class="vid">
+          <div class="dp" data-video-id="8wG5IkdGPVo" tabindex="0" aria-label="Student testimonial video">
+            <button type="button" class="dp-facade" aria-label="Play testimonial">
+              <img class="dp-poster" src="https://img.youtube.com/vi/8wG5IkdGPVo/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/8wG5IkdGPVo/hqdefault.jpg';" alt="" loading="lazy">
+              <span class="dp-shade"></span><span class="dp-play"></span>
+            </button>
+          </div>
+          <div class="vid-cap"><div class="n">Student name</div><div class="r">Add their one-line result</div></div>
+        </div>
+        <div class="vid">
+          <div class="dp" data-video-id="isLRrxUPrg4" tabindex="0" aria-label="Student testimonial video">
+            <button type="button" class="dp-facade" aria-label="Play testimonial">
+              <img class="dp-poster" src="https://img.youtube.com/vi/isLRrxUPrg4/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/isLRrxUPrg4/hqdefault.jpg';" alt="" loading="lazy">
+              <span class="dp-shade"></span><span class="dp-play"></span>
+            </button>
+          </div>
+          <div class="vid-cap"><div class="n">Student name</div><div class="r">Add their one-line result</div></div>
+        </div>
+        <div class="vid">
+          <div class="dp" data-video-id="1gnq8tn4RaE" tabindex="0" aria-label="Student testimonial video">
+            <button type="button" class="dp-facade" aria-label="Play testimonial">
+              <img class="dp-poster" src="https://img.youtube.com/vi/1gnq8tn4RaE/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://img.youtube.com/vi/1gnq8tn4RaE/hqdefault.jpg';" alt="" loading="lazy">
+              <span class="dp-shade"></span><span class="dp-play"></span>
+            </button>
+          </div>
+          <div class="vid-cap"><div class="n">Student name</div><div class="r">Add their one-line result</div></div>
+        </div>
+      </div>
+    </section>
+
     <!-- 6. Founder credibility stack -->
     <section class="sec section">
       <div class="divider"></div>
@@ -495,6 +596,7 @@
   </main>
 
   <script src="https://fast.wistia.com/player.js" async></script>
+  <script src="https://fast.wistia.com/embed/99ogqgpzwf.js" async type="module"></script>
   <script src="https://fast.wistia.com/embed/m8buo9wund.js" async type="module"></script>
   <script src="https://fast.wistia.com/embed/lolchzxlz1.js" async type="module"></script>
   <script src="https://fast.wistia.com/embed/1cmk5w8uzl.js" async type="module"></script>
@@ -528,6 +630,124 @@
     document.querySelectorAll('a[href="#"]').forEach(function (a) {
       a.addEventListener('click', function (e) { e.preventDefault(); });
     });
+  </script>
+
+  <script>
+    /* Custom Dooly video player: poster facade -> YouTube IFrame API with light/red controls.
+       Reusable per .dp[data-video-id]. Nothing loads from YouTube until the user clicks (poster only). */
+    (function () {
+      var apiPromise = null;
+      function loadAPI() {
+        if (window.YT && window.YT.Player) return Promise.resolve();
+        if (apiPromise) return apiPromise;
+        apiPromise = new Promise(function (resolve) {
+          var prev = window.onYouTubeIframeAPIReady;
+          window.onYouTubeIframeAPIReady = function () { if (typeof prev === 'function') { try { prev(); } catch (e) {} } resolve(); };
+          var s = document.createElement('script');
+          s.src = 'https://www.youtube.com/iframe_api';
+          document.head.appendChild(s);
+        });
+        return apiPromise;
+      }
+      function fmt(t) { t = Math.max(0, Math.floor(t || 0)); var m = Math.floor(t / 60), s = t % 60; return m + ':' + (s < 10 ? '0' : '') + s; }
+      var IC = {
+        play: '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+        pause: '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',
+        vol: '<svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 4V6L7 10H3z"/><path d="M15.5 12a2.6 2.6 0 0 0-1.7-2.45v4.9A2.6 2.6 0 0 0 15.5 12z"/></svg>',
+        mute: '<svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 4V6L7 10H3z"/><path d="M15 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+        full: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      };
+      function activate(root) {
+        if (root.dataset.activated) return;
+        root.dataset.activated = '1';
+        var id = root.getAttribute('data-video-id');
+        var facade = root.querySelector('.dp-facade');
+        var host = document.createElement('div');
+        root.insertBefore(host, facade);
+        var bar = document.createElement('div');
+        bar.className = 'dp-controls';
+        bar.innerHTML =
+          '<button class="dp-btn dp-pp" aria-label="Play">' + IC.play + '</button>' +
+          '<div class="dp-track" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><div class="dp-fill"></div></div>' +
+          '<span class="dp-time">0:00 / 0:00</span>' +
+          '<button class="dp-btn dp-mute" aria-label="Mute">' + IC.vol + '</button>' +
+          '<button class="dp-btn dp-full" aria-label="Fullscreen">' + IC.full + '</button>';
+        root.appendChild(bar);
+        if (facade) facade.style.display = 'none';
+
+        loadAPI().then(function () {
+          var timer = null, hideTO = null;
+          var player = new YT.Player(host, {
+            videoId: id,
+            playerVars: { controls: 0, rel: 0, modestbranding: 1, playsinline: 1, autoplay: 1, disablekb: 0, fs: 0, iv_load_policy: 3, playlist: id, origin: location.origin },
+            events: { onReady: onReady, onStateChange: onState }
+          });
+          var pp = bar.querySelector('.dp-pp'), track = bar.querySelector('.dp-track'), fill = bar.querySelector('.dp-fill'),
+              timeEl = bar.querySelector('.dp-time'), muteBtn = bar.querySelector('.dp-mute'), fullBtn = bar.querySelector('.dp-full');
+          function onReady() {
+            try { player.playVideo(); } catch (e) {}
+            var st = player.getPlayerState && player.getPlayerState();
+            var playing = (st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING);
+            pp.innerHTML = playing ? IC.pause : IC.play; pp.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+            var m = player.isMuted && player.isMuted();
+            muteBtn.innerHTML = m ? IC.mute : IC.vol; muteBtn.setAttribute('aria-label', m ? 'Unmute' : 'Mute');
+            root.classList.add('show-controls'); scheduleHide(); update();
+          }
+          function onState(e) {
+            var S = YT.PlayerState;
+            if (e.data === S.PLAYING) { pp.innerHTML = IC.pause; pp.setAttribute('aria-label', 'Pause'); root.classList.remove('paused'); startTimer(); scheduleHide(); }
+            else if (e.data === S.BUFFERING) { pp.innerHTML = IC.pause; pp.setAttribute('aria-label', 'Pause'); }
+            else if (e.data === S.PAUSED) { pp.innerHTML = IC.play; pp.setAttribute('aria-label', 'Play'); root.classList.add('paused'); stopTimer(); }
+            else if (e.data === S.ENDED) { pp.innerHTML = IC.play; pp.setAttribute('aria-label', 'Replay'); root.classList.add('paused'); stopTimer(); update(); }
+          }
+          function startTimer() { stopTimer(); timer = setInterval(update, 250); }
+          function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
+          function update() {
+            if (!player.getDuration) return;
+            var d = player.getDuration() || 0, c = player.getCurrentTime() || 0, pct = d ? (c / d * 100) : 0;
+            fill.style.width = pct + '%';
+            track.setAttribute('aria-valuenow', Math.round(pct));
+            timeEl.textContent = fmt(c) + ' / ' + fmt(d);
+          }
+          function toggle() { var st = player.getPlayerState && player.getPlayerState(); if (st === YT.PlayerState.PLAYING) player.pauseVideo(); else player.playVideo(); }
+          function seekAt(clientX) { var r = track.getBoundingClientRect(); var f = Math.min(1, Math.max(0, (clientX - r.left) / r.width)); player.seekTo(f * (player.getDuration() || 0), true); update(); }
+          pp.addEventListener('click', toggle);
+          track.addEventListener('click', function (ev) { seekAt(ev.clientX); });
+          track.addEventListener('keydown', function (ev) {
+            var d = player.getDuration() || 0, c = player.getCurrentTime() || 0;
+            if (ev.key === 'ArrowRight') { ev.preventDefault(); player.seekTo(Math.min(d, c + 5), true); update(); }
+            else if (ev.key === 'ArrowLeft') { ev.preventDefault(); player.seekTo(Math.max(0, c - 5), true); update(); }
+          });
+          muteBtn.addEventListener('click', function () {
+            if (player.isMuted()) { player.unMute(); muteBtn.innerHTML = IC.vol; muteBtn.setAttribute('aria-label', 'Mute'); }
+            else { player.mute(); muteBtn.innerHTML = IC.mute; muteBtn.setAttribute('aria-label', 'Unmute'); }
+          });
+          fullBtn.addEventListener('click', function () {
+            var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+            if (fsEl) { (document.exitFullscreen || document.webkitExitFullscreen || function () {}).call(document); }
+            else if (root.requestFullscreen) { root.requestFullscreen(); }
+            else if (root.webkitRequestFullscreen) { root.webkitRequestFullscreen(); }
+          });
+          function showControls() { root.classList.add('show-controls'); scheduleHide(); }
+          function scheduleHide() { if (hideTO) clearTimeout(hideTO); hideTO = setTimeout(function () { if (!root.classList.contains('paused')) root.classList.remove('show-controls'); }, 2600); }
+          root.addEventListener('mousemove', showControls);
+          root.addEventListener('touchstart', showControls, { passive: true });
+          root.addEventListener('mouseleave', function () { if (!root.classList.contains('paused')) root.classList.remove('show-controls'); });
+          root.addEventListener('keydown', function (ev) {
+            if (ev.target === track) return;
+            if (ev.key === ' ' || ev.code === 'Space' || ev.key === 'k') { ev.preventDefault(); toggle(); showControls(); }
+          });
+        });
+      }
+      function init() {
+        var list = document.querySelectorAll('.dp[data-video-id]');
+        Array.prototype.forEach.call(list, function (root) {
+          var facade = root.querySelector('.dp-facade');
+          if (facade) facade.addEventListener('click', function () { activate(root); });
+        });
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+    })();
   </script>
 </body>
 </html>
