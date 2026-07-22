@@ -202,13 +202,10 @@
     background-repeat: no-repeat; background-position: center; opacity: 0.7;
   }
 
-  /* ---- Testimonials ---- */
-  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px auto 0; }
-  .testi { background: #ffffff; border: 1px solid var(--line); border-radius: 16px; padding: 18px; text-align: left; box-shadow: 0 16px 34px -26px rgba(26,26,26,0.2); display: flex; flex-direction: column; gap: 12px; }
-  .testi-photo { position: relative; width: 100%; aspect-ratio: 16 / 10; border-radius: 10px; background: #f4f3f2; border: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: center; }
-  .testi-photo span { width: 40px; height: 40px; border-radius: 50%; background: rgba(242,102,111,0.12); color: var(--red-deep); font-weight: 800; font-size: 17px; display: flex; align-items: center; justify-content: center; }
-  .testi-name { font-size: 15px; font-weight: 700; color: var(--ink); }
-  .testi-result { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+  /* ---- Testimonials: masonry wall of real screenshots ---- */
+  .proof-wall { column-count: 3; column-gap: 14px; margin: 28px auto 0; max-width: 900px; }
+  .proof-shot { break-inside: avoid; margin: 0 0 14px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #ffffff; box-shadow: 0 16px 34px -26px rgba(26,26,26,0.2); }
+  .proof-shot img { display: block; width: 100%; height: auto; }
 
   /* ---- Divider + Scarcity + CTA ---- */
   .divider { height: 1px; width: 100%; max-width: 420px; margin: 0 auto; background: linear-gradient(90deg, transparent, var(--red-bright), transparent); box-shadow: 0 0 14px 1px rgba(242, 102, 111, 0.45); }
@@ -232,7 +229,7 @@
   /* ---- Responsive ---- */
   @media (max-width: 720px) {
     .g15 { grid-template-columns: repeat(4, 1fr); }
-    .testi-grid { grid-template-columns: repeat(2, 1fr); }
+    .proof-wall { column-count: 2; }
   }
   @media (max-width: 560px) {
     .sec { padding: 0 18px; }
@@ -248,7 +245,7 @@
     .g6 { grid-template-columns: repeat(2, 1fr); }
     .g3 { grid-template-columns: repeat(3, 1fr); }
     .g15 { grid-template-columns: repeat(3, 1fr); }
-    .testi-grid { grid-template-columns: repeat(1, 1fr); }
+    .proof-wall { column-count: 1; max-width: 420px; }
     .faq-list { gap: 30px; }
     .cta { padding: 18px 38px; font-size: 15px; letter-spacing: 0.1em; }
     .vsl { border-radius: 16px; }
@@ -452,27 +449,13 @@
     <!-- 9. Student testimonials -->
     <section class="sec wide section">
       <h2 class="sec-title">Hear what my students are saying.</h2>
-      <div class="testi-grid">
-        <div class="testi">
-          <div class="testi-photo"><span>A</span></div>
-          <div><div class="testi-name">Anthony</div><div class="testi-result">$3,000+ in 1 month after struggling for 3 years</div></div>
-        </div>
-        <div class="testi">
-          <div class="testi-photo"><span>A</span></div>
-          <div><div class="testi-name">Alex</div><div class="testi-result">$2,000+ in his first month (while still in high school)</div></div>
-        </div>
-        <div class="testi">
-          <div class="testi-photo"><span>K</span></div>
-          <div><div class="testi-name">Kevin</div><div class="testi-result">Sold out his first drop in 1 month ($2,000+)</div></div>
-        </div>
-        <div class="testi">
-          <div class="testi-photo"><span>J</span></div>
-          <div><div class="testi-name">Jam</div><div class="testi-result">Sold out his first drop and made $4,000+ (no ads)</div></div>
-        </div>
-        <div class="testi">
-          <div class="testi-photo"><span>L</span></div>
-          <div><div class="testi-name">Lincoln</div><div class="testi-result">From 400 to 1,100 followers in a week — sold half his drop in 24 hours</div></div>
-        </div>
+      <div class="proof-wall">
+        <figure class="proof-shot"><img src="testimonials/eric-lin.png" alt="Eric Lin: store opened yesterday and almost sold out half my inventory in under 24 hours — Dooly is one of the best mentors" loading="lazy"></figure>
+        <figure class="proof-shot"><img src="testimonials/worldwiderichh-1509.png" alt="WorldWide.Richh: early sales, $1,509 total" loading="lazy"></figure>
+        <figure class="proof-shot"><img src="testimonials/alex.png" alt="Alex: 5 sales today and I just woke up" loading="lazy"></figure>
+        <figure class="proof-shot"><img src="testimonials/jumbaaa.png" alt="Jumbaaa (ETHEREAL): $904 in one day, $1,293 in one week" loading="lazy"></figure>
+        <figure class="proof-shot"><img src="testimonials/worldwiderichh-4k.png" alt="WorldWide.Richh: first ever 4k month, $4,024" loading="lazy"></figure>
+        <figure class="proof-shot"><img src="testimonials/worldwiderichh-5k.png" alt="WorldWide.Richh: first ever 5k month, $5,023 — halfway to 10k" loading="lazy"></figure>
       </div>
     </section>
 
