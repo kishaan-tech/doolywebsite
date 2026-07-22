@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dooly — You're Almost Done · Before Your Call</title>
+<title>The Brand Academy — You're Almost Done · Before Your Call</title>
 <style>
   :root {
     --bg-top: #faf9f8;
@@ -61,7 +61,7 @@
 
   /* Wordmark */
   .brand { display: inline-flex; align-items: center; gap: 10px; margin-top: 40px; margin-bottom: 40px; }
-  .brand-img { height: 56px; width: auto; display: block; }
+  .brand-logo { display: block; width: 58px; height: 58px; background-color: var(--red-deep); -webkit-mask: url("logo.png") center / contain no-repeat; mask: url("logo.png") center / contain no-repeat; }
   .brand-mark { width: 15px; height: 15px; border-radius: 5px; background: linear-gradient(135deg, var(--red-bright), var(--red-deep)); box-shadow: 0 3px 10px rgba(224, 75, 86, 0.32); }
   .brand-name { font-size: 15px; font-weight: 700; letter-spacing: 0.22em; color: var(--ink); }
 
@@ -189,7 +189,7 @@
   .faq-item .vsl-play { width: 56px; height: 56px; }
   .faq-item .vsl-play::after { border-top-width: 10px; border-bottom-width: 10px; border-left-width: 16px; }
 
-  /* ---- Long-form video testimonials: custom Dooly YouTube player ---- */
+  /* ---- Long-form video testimonials: custom Brand Academy YouTube player ---- */
   .vids { display: grid; grid-template-columns: repeat(2, 1fr); gap: 34px 22px; margin: 30px auto 0; max-width: 900px; }
   .vids > .vid:last-child:nth-child(odd) { grid-column: 1 / -1; max-width: 439px; margin: 0 auto; }
   .vid-cap { margin-top: 14px; text-align: center; }
@@ -305,7 +305,7 @@
 
     <!-- Wordmark -->
     <div class="sec">
-      <div class="brand"><img class="brand-img" src="logo.png" alt="The Brand Academy"></div>
+      <div class="brand"><span class="brand-logo" role="img" aria-label="The Brand Academy"></span></div>
     </div>
 
     <!-- 1. Urgency intervention header -->
@@ -452,7 +452,7 @@
       </div>
     </section>
 
-    <!-- 5b. Long-form video testimonials (custom Dooly player) -->
+    <!-- 5b. Long-form video testimonials (custom Brand Academy player) -->
     <section class="sec wide section">
       <h2 class="sec-title">Hear it straight from our students</h2>
       <p class="sec-sub">Real brand owners, in their own words.</p>
@@ -528,7 +528,7 @@
     <section class="sec wide section">
       <h2 class="sec-title">Hear what my students are saying.</h2>
       <div class="proof-wall">
-        <figure class="proof-shot"><img src="testimonials/eric-lin.png" alt="Eric Lin: store opened yesterday and almost sold out half my inventory in under 24 hours — Dooly is one of the best mentors" loading="lazy"></figure>
+        <figure class="proof-shot"><img src="testimonials/eric-lin.png" alt="Eric Lin: store opened yesterday and almost sold out half my inventory in under 24 hours" loading="lazy"></figure>
         <figure class="proof-shot"><img src="testimonials/worldwiderichh-1509.png" alt="WorldWide.Richh: early sales, $1,509 total" loading="lazy"></figure>
         <figure class="proof-shot"><img src="testimonials/alex.png" alt="Alex: 5 sales today and I just woke up" loading="lazy"></figure>
         <figure class="proof-shot"><img src="testimonials/jumbaaa.png" alt="Jumbaaa (ETHEREAL): $904 in one day, $1,293 in one week" loading="lazy"></figure>
@@ -557,11 +557,11 @@
     <section class="sec">
       <div class="fineprint">
         <p><strong>Earnings &amp; Results Disclaimer.</strong> The results and testimonials shared on this page are exceptional and are not representative of average performance. These outcomes are not typical, and there's no promise that you'll achieve similar results. Any figures or projections mentioned are simply estimates of what we believe may be possible — there's no guarantee you'll earn the same, and your results will depend on a range of factors including your skills, dedication, experience, decision-making, and market conditions. Building a clothing brand carries risk, and we cannot and do not make any guarantees about your results or income.</p>
-        <p>Some individuals featured in our testimonials may have a material connection to Dooly — such as being compensated or receiving other benefits in exchange for their feedback.</p>
+        <p>Some individuals featured in our testimonials may have a material connection to The Brand Academy LLC — such as being compensated or receiving other benefits in exchange for their feedback.</p>
         <p>Any guarantee is conditional and requires you to complete the training, apply the strategies as instructed, hit the engagement benchmarks, and follow the required actions within the timeframes outlined in our Terms of Service.</p>
       </div>
       <footer>
-        <div class="footer-legal">© Dooly. All rights reserved. · <a href="#">Terms of Service</a> · <a href="#">Privacy Policy</a></div>
+        <div class="footer-legal">© The Brand Academy LLC. All rights reserved. · <a href="#">Terms of Service</a> · <a href="#">Privacy Policy</a></div>
       </footer>
     </section>
 
@@ -605,7 +605,7 @@
   </script>
 
   <script>
-    /* Custom Dooly video player: poster facade -> YouTube IFrame API with light/red controls.
+    /* Custom Brand Academy video player: poster facade -> YouTube IFrame API with light/red controls.
        Reusable per .dp[data-video-id]. Nothing loads from YouTube until the user clicks (poster only). */
     (function () {
       var apiPromise = null;
