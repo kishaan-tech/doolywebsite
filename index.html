@@ -221,8 +221,9 @@
   /* Typeform application — revealed inline below the APPLY NOW button on click */
   .apply-form { width: 100%; max-width: 640px; margin: 30px auto 0; }
   .apply-form[hidden] { display: none; }
-  .apply-form [data-tf-live] { width: 100%; height: 640px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-top); box-shadow: 0 22px 46px -26px rgba(26,26,26,0.30); }
-  @media (max-width: 560px) { .apply-form [data-tf-live] { height: 560px; } }
+  /* No fixed height: the box hugs the Typeform iframe (which sets its own height) so no
+     background is ever exposed below the form on wider screens. */
+  .apply-form [data-tf-live] { width: 100%; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 22px 46px -26px rgba(26,26,26,0.30); }
   .dp-facade { inset: 0; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background: none; cursor: pointer; display: block; }
   .dp-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .dp-shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.04) 30%, rgba(0,0,0,0.32)); }
@@ -464,13 +465,7 @@
       <div class="step-label">STEP 2 — APPLY BELOW</div>
 
       <div class="cta-block">
-        <div class="scarcity-1">
-          <span class="dot"></span>
-          WE ONLY TAKE ON A FEW EACH MONTH
-        </div>
         <div class="scarcity-2">Join 70+ brand owners building real brands worldwide 🌍</div>
-
-        <div class="cue">Apply below ⬇️</div>
 
         <div class="cta-halo">
           <a href="#" class="cta" id="applyNow">APPLY <span class="accent">NOW</span></a>
