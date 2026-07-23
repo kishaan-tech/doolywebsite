@@ -217,6 +217,12 @@
   .dp { position: relative; width: 100%; padding-top: 56.25%; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #0c0c0d; box-shadow: 0 22px 46px -26px rgba(26,26,26,0.30); outline: none; }
   .dp > * { position: absolute; }
   .dp iframe { inset: 0; width: 100%; height: 100%; border: 0; }
+
+  /* Typeform application — revealed inline below the APPLY NOW button on click */
+  .apply-form { width: 100%; max-width: 640px; margin: 30px auto 0; }
+  .apply-form[hidden] { display: none; }
+  .apply-form [data-tf-live] { width: 100%; height: 640px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: var(--bg-top); box-shadow: 0 22px 46px -26px rgba(26,26,26,0.30); }
+  @media (max-width: 560px) { .apply-form [data-tf-live] { height: 560px; } }
   .dp-facade { inset: 0; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background: none; cursor: pointer; display: block; }
   .dp-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .dp-shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.04) 30%, rgba(0,0,0,0.32)); }
@@ -519,7 +525,11 @@
         <div class="cue">Apply below ⬇️</div>
 
         <div class="cta-halo">
-          <a href="#" class="cta">APPLY <span class="accent">NOW</span></a>
+          <a href="#" class="cta" id="applyNow">APPLY <span class="accent">NOW</span></a>
+        </div>
+
+        <div id="apply-form" class="apply-form" hidden>
+          <div data-tf-live="01KAJC5CFZTJ95SEZ401D3TH4M"></div>
         </div>
       </div>
     </section>
@@ -538,14 +548,39 @@
   <script src="https://fast.wistia.com/player.js" async></script>
   <script src="https://fast.wistia.com/embed/ftjrymtbmo.js" async type="module"></script>
   <script>
-    // Minimal, optional smooth scroll for the CTA / apply links. No storage APIs.
-    document.querySelectorAll('a[href="#"]').forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        e.preventDefault();
-        var target = document.getElementById('apply');
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // APPLY NOW -> reveal the Typeform inline below the button, then scroll to it.
+    // Typeform's embed script loads lazily on first click, so the form mounts into an
+    // already-visible, correctly-sized container (and doesn't slow the initial page load).
+    (function () {
+      var applyBtn = document.getElementById('applyNow');
+      var applyForm = document.getElementById('apply-form');
+      var tfLoaded = false;
+      function loadTypeform() {
+        if (tfLoaded) return;
+        tfLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://embed.typeform.com/next/embed.js';
+        s.async = true;
+        document.body.appendChild(s);
+      }
+      if (applyBtn && applyForm) {
+        applyBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          applyForm.hidden = false;
+          loadTypeform();
+          applyForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+      // Other in-page "#" links (footer legal, etc.): gentle scroll to the apply section.
+      document.querySelectorAll('a[href="#"]').forEach(function (a) {
+        if (a.id === 'applyNow') return;
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          var target = document.getElementById('apply');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
       });
-    });
+    })();
   </script>
 
   <script>
